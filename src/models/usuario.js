@@ -36,6 +36,10 @@ Usuario.init({
     sequelize, modelName:'usuario'
 });
 
+Usuario.buscarPorId = async function(id) {
+    return await this.findByPk(id);
+  };
+
 // `sequelize.define` also returns the model
 
 module.exports = Usuario;

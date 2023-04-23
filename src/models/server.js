@@ -42,7 +42,9 @@ class Server{
     }
     listen(){
         this.app.listen(this.port,()=>{
-            console.log(`app lista en http://192.168.1.105:${this.port}`)
+            //ip caseros 192.168.18.14
+            //ip casa 192.168.1.105
+            console.log(`app lista en http://192.168.18.14:${this.port}`)
             //? sincronizar las asociaciones con la base de datos;
             //! si force esta en true hace un drop de todas las tablas
             sequelize.sync({force:false}).then(()=>{

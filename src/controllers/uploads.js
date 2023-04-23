@@ -69,13 +69,13 @@ const mostrarImagen = async(req = require, res = response)=>{
   switch (coleccion) {
     case 'usuarios':
       modelo = await Usuario.findByPk(id)
-      if(!modelo.dataValues){
+      if(!modelo ){
         return res.status(400).sendFile(noImage)
       }
       break;
       case 'roles':
       modelo = await Roles.findByPk(id)
-      if(!modelo.dataValues){
+      if(!modelo){
         return res.status(400).sendFile(noImage)
       }
       break;
