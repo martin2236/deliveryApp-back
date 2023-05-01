@@ -171,7 +171,6 @@ const updateUser = async(req = request, res = response) =>{
 
     //*EL USUARIO EXISTE Y SE ENVIO UNA IMAGEN
     try {
-        console.log('CON IMAGEN',user)
         if(user.image){
             const pathImage = path.join(__dirname , '../uploads/imagenes' , 'usuarios' , user.image);
             if(fs.existsSync(pathImage)){

@@ -4,6 +4,7 @@ const sequelize = require('../database/dbConnection')
 const fileUpload = require('express-fileupload')
 const usuario = require('../routes/auth');
 const uploads = require('../routes/uploads');
+const categoria = require('../routes/categorias');
 const roles = require('../routes/roles');
 const passport = require('passport');
 require('../config/passport')(passport);
@@ -18,7 +19,8 @@ class Server{
         this.routes = {
             usuario:'/api/usuario',
             role:'/api/roles',
-            uploads:'/api/uploads'
+            uploads:'/api/uploads',
+            categoria:'/api/categoria'
         }
         this.middlewares();
         this.router();
@@ -39,6 +41,7 @@ class Server{
         this.app.use(this.routes.usuario, usuario);
         this.app.use(this.routes.role, roles);
         this.app.use(this.routes.uploads, uploads);
+        this.app.use(this.routes.categoria, categoria);
     }
     listen(){
         this.app.listen(this.port,()=>{

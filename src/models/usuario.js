@@ -33,7 +33,8 @@ Usuario.init({
     type: DataTypes.BOOLEAN,
   },
 }, {
-    sequelize, modelName:'usuario'
+    sequelize, modelName:'usuario',
+    paranoid:true,
 });
 
 Usuario.buscarPorId = async function(id) {

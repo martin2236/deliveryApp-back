@@ -4,6 +4,7 @@ const fs = require('fs')
 const { response, request } = require("express")
 const { subirArchivo } = require('../helpers/subir-archivo');
 const Usuario = require('../models/usuario');
+const Categoria = require('../models/categoria');
 const Roles = require('../models/roles');
 
 const cargarArchivo = async (req = request, res= response) =>{
@@ -32,6 +33,14 @@ const actualizarImagen = async(req = request ,res = response)=>{
       if(!modelo){
         return res.status(400).json({
           msg: `No se encontro ningun usuario con el ${id}`
+        })
+      }
+      break;
+      case 'categorias':
+      modelo = await Categoria.findByPk(id)
+      if(!modelo){
+        return res.status(400).json({
+          msg: `No se encontro ninguna categoria con el ${id}`
         })
       }
       break;
@@ -73,6 +82,12 @@ const mostrarImagen = async(req = require, res = response)=>{
         return res.status(400).sendFile(noImage)
       }
       break;
+      case 'categorias':
+        modelo = await Categoria.findByPk(id)
+        if(!modelo ){
+          return res.status(400).sendFile(noImage)
+        }
+        break;
       case 'roles':
       modelo = await Roles.findByPk(id)
       if(!modelo){
