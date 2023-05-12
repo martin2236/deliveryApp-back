@@ -10,7 +10,7 @@ router.get('/:id',passport.authenticate('jwt',{session:false}),traerCategoria)
 
 router.post('/create',passport.authenticate('jwt',{session:false}),crearCategoria)
 
-router.put('/:id',passport.authenticate('jwt',{session:false}),actualizarCategoria)
+router.put('/update/:id',passport.authenticate('jwt',{session:false}),actualizarCategoria)
 
 router.delete('/:id',passport.authenticate('jwt',{session:false}),eliminarCategoria)
 

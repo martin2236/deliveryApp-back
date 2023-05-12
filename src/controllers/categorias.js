@@ -3,6 +3,7 @@ const Categoria = require('../models/categoria');
 const { subirArchivo } = require('../helpers/subir-archivo');
 const path = require('path');
 const fs = require('fs');
+const { Console } = require('console');
 
 const traerCategoria = async (req = request, res = response) => {
     const {id} = req.params;
@@ -43,13 +44,12 @@ const crearCategoria = async (req = request, res = response) => {
 
     //* verifica que la categoria no existia antes
     const categoria = await Categoria.findOne({
-        where: { name },
+        where: { name:name.trim() },
         paranoid: false,
       });
 
-    console.log(categoria)
     //* si no existia la categoria la crea
-    if(!categoria.dataValues){
+    if(!categoria){
         console.log('no existe')
     try {
         //*subiendo imagen
@@ -69,7 +69,7 @@ const crearCategoria = async (req = request, res = response) => {
            
         //*creando categoria
         const newCategoria = await Categoria.create({
-            name,
+            name:name.trim(),
             description,
             image,
             estado
@@ -108,30 +108,87 @@ const crearCategoria = async (req = request, res = response) => {
 
 const actualizarCategoria = async (req = request, res = response) => {
     const {id} = req.params;
-    const {name, description, image, estado} = req.body;
-    try {
-        const categoria = await Categoria.update({
-            name,
-            description,
-            image,
-            estado
-        }, {
-            where: {
-                id
-            }
+    const {name, description,image ,estado} = req.body;
+    const file = req.files;
+
+
+    const categoria = await Categoria.findByPk(id);
+    if(! categoria){
+        return res.status(400).json({
+            success:false,
+            msg:"la categoria indicada no existe",
+            data: error
         });
-        return res.status(200).json({
-            data:categoria,
-            msg:'categoria selaccionada',
-            success:true
-        })
-    } catch (error) {
-        return res.status(500).json({
-            data:error,
-            msg:'error al conectar con la base de datos',
-            success:false
-        })
-    }
+    };
+    if(!file){
+        console.log('NO HA IMAGEN')
+        try {
+            const categoria = await Categoria.update({
+                name,
+                description,
+                image,
+                estado
+            }, {
+                where: {
+                    id
+                }
+            });
+            return res.status(200).json({
+                data:categoria,
+                msg:'categoria actualizada con éxito',
+                success:true
+            })
+        } catch (error) {
+            return res.status(500).json({
+                data:error,
+                msg:'error al conectar con la base de datos',
+                success:false
+            })
+        }
+    };
+
+    try {
+        if(categoria.image){
+            console.log('HAY IMAGEN', categoria.image)
+            const pathImage = path.join(__dirname , '../uploads/imagenes' , 'categorias' , categoria.image);
+            if(fs.existsSync(pathImage)){
+              fs.unlinkSync(pathImage);
+            };
+          };
+          const nuevaImagen = await subirArchivo(req.files, undefined, 'categorias');
+          console.log('NUEVA IMAGEN',nuevaImagen)
+          try {
+            const categoria = await Categoria.update({
+                name,
+                description,
+                image:nuevaImagen,
+                estado
+            }, {
+                where: {
+                    id
+                }
+            });
+            return res.status(200).json({
+                data:categoria,
+                msg:'categoria actualizada con éxito',
+                success:true
+            })
+        } catch (error) {
+            return res.status(500).json({
+                data:error,
+                msg:'error al conectar con la base de datos',
+                success:false
+            })
+        }
+      
+       } catch (error) {
+            console.log(error)
+            return res.status(400).json({
+                msg:"ocurrió un error la modificar la categoria CON IMAGEN"
+            })
+       };
+    
+        
 }
 
 const eliminarCategoria = async (req = request, res = response) => {

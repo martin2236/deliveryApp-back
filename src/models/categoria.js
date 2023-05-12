@@ -21,6 +21,13 @@ Categoria.init({
 }, {
     sequelize, modelName:'categoria',
     paranoid:true,
+    hooks: {
+        beforeValidate: function(category) {
+          if (category.name) {
+            category.name = category.name.trim();
+          }
+        }
+    }
 });
 Categoria.buscarPorName = async function(name) {
     return await this.findOne({
